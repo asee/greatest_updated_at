@@ -92,6 +92,6 @@ bundle
 
 ## Warnings
 
-Referencing tables without an updated_at will cause it to break.  It has only been tested on MySQL.  There are no automated tests.
+Referencing tables without an updated_at will cause it to break.  It may not work with some polymorphic relations.  It has only been tested on MySQL.  There are no automated tests.
 
 Pull requests and suggestions for improvement are welcome.

@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "greatest_updated_at"
-  s.version = '0.0.1'
+  s.version = '0.1.0'
   s.date = '2015-02-19'
   s.authors = ["James Prior"]
   s.email = ["j.prior@asee.org"]
@@ -8,4 +8,6 @@ Gem::Specification.new do |s|
   s.description = "An AR extension to get the most recent updated_at from an active record relation and it's included records"
   s.homepage = "https://github.com/asee/greatest_updated_at"
   s.files = Dir["{lib}/**/*.rb", "LICENSE"]
+  s.add_runtime_dependency 'activerecord',  ['>= 3.2', '< 5']
+  s.license = "GPL v2"
 end
