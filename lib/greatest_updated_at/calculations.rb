@@ -12,23 +12,30 @@ module GreatestUpdatedAt
       # Force everything included to be in the query via LEFT OUTER JOIN
       relation = self.eager_load(self.includes_values)
       
-      # This is an unrolling of find_with_associations - we want to 
-      # load up the join_dependency, inspect it, and select our own columns
-      including = relation.eager_load_values + relation.includes_values
-      join_dependency = ActiveRecord::Associations::JoinDependency.new(relation.klass, including, relation.joins_values)
+      # Using this to get a list of tables included via join statements, we don't want to calculate based on those
+      alias_tracker = ActiveRecord::Associations::AliasTracker.create(relation.klass.connection, relation.joins_values)
+      join_tables = alias_tracker.aliases.keys
       
-      # inspect it for the tables of interest
-      arel_tables = join_dependency.join_root.children.collect(&:tables).flatten
-      table_names = arel_tables.collect(&:name) | [relation.klass.table_name]
-      # note our own columns to select
-      relation.select_values = [ greatest_select_val(table_names) ]
-      
-      # apply the dependency like find_with_associations would have
-      relation = apply_join_dependency(relation, join_dependency)
-      
+      if relation.eager_loading?
+        relation.send(:find_with_associations) { |rel| relation = rel };nil
+      end
+      relation.select_values = ['1'] #placeholder while we generate the initial arel
       arel = relation.arel
+
+      # collect the list of table names we want to get the max updated at from
+      join_nodes = arel.join_sources.reject{ |join| join.kind_of?(Arel::Nodes::StringJoin) }
+      table_names = join_nodes.collect{ |join|  join.left.name } 
       
+      # remove the join tables and make sure the root table is present 
+      table_names = (table_names - join_tables) | [relation.klass.table_name]
+      
+      # Clear the arel projection, it used to be a placeholder
+      arel.projections = []
+      
+      arel.project greatest_select_val(table_names)
+
       relation.klass.connection.select_value(arel, 'SQL', arel.bind_values + relation.bind_values)
+      
     end
     
     protected
