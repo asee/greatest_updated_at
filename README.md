@@ -6,13 +6,13 @@ Find the greatest updated_at from all included records in an AR scope
 Start with a scope.  Then use greatest_updated_at.  See the most recently updated_at value for all records selected by the scope.
 
 ```ruby
-Author.all.maximum(:updated_at).utc                 # => 2015-02-18 16:36:04 UTC
-Author.all.greatest_updated_at.utc                  # => 2015-02-18 16:36:04 UTC (same thing)
+Author.all.maximum(:updated_at)                     # => Wed, 18 Feb 2015 16:36:04 UTC +00:00
+Author.all.greatest_updated_at                      # => Wed, 18 Feb 2015 16:36:04 UTC +00:00
 
-Document.all.maximum(:updated_at).utc               # => 2014-11-07 04:12:55 UTC
-Document.all.greatest_updated_at.utc                # => 2014-11-07 04:12:55 UTC (same thing)
+Document.all.maximum(:updated_at)                   # => Fri, 07 Nov 2014 04:12:55 UTC +00:00
+Document.all.greatest_updated_at                    # => Fri, 07 Nov 2014 04:12:55 UTC +00:00
 
-Document.all.includes(:authors).greatest_updated_at # => 2015-02-18 16:36:04 UTC (the most recent authors.updated_at)
+Document.all.includes(:authors).greatest_updated_at # => Wed, 18 Feb 2015 16:36:04 UTC +00:00
 ```
 #### Why use this?
 

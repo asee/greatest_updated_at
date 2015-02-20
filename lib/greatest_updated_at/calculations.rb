@@ -33,15 +33,16 @@ module GreatestUpdatedAt
       arel.projections = []
       
       arel.project greatest_select_val(table_names)
-
-      relation.klass.connection.select_value(arel, 'SQL', arel.bind_values + relation.bind_values)
       
+      # Get the result, and make sure it is cast the same as updated_at
+      result = relation.klass.connection.select_value(arel, 'SQL', arel.bind_values + relation.bind_values)
+      relation.klass.column_types["updated_at"].type_cast_from_database(result)
     end
     
     protected
     def greatest_select_val(table_names)
       max_calcs = Array(table_names).collect{|name|
-        "MAX(#{connection.quote_table_name(name.to_s)}.#{connection.quote_column_name("updated_at")})"
+        "COALESCE(MAX(#{connection.quote_table_name(name.to_s)}.#{connection.quote_column_name("updated_at")}), 0)"
       }
       
       if max_calcs.length == 1

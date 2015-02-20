@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "greatest_updated_at"
-  s.version = '0.1.0'
+  s.version = '0.1.1'
   s.date = '2015-02-19'
   s.authors = ["James Prior"]
   s.email = ["j.prior@asee.org"]
