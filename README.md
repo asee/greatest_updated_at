@@ -6,9 +6,8 @@ Find the greatest updated_at from all included records in an AR scope
 Start with a scope.  Then use greatest_updated_at.  See the most recently updated_at value for all records selected by the scope.
 
 ```ruby
-Document.all.maximum(:updated_at) # =>  2015-02-18 16:36:04 UTC
-Author.all.maximum(:updated_at) # =>  2015-02-17 04:12:55 UTC
-
+Author.all.maximum(:updated_at).utc                 # => 2015-02-18 16:36:04 UTC
+Document.all.maximum(:updated_at).utc               # => 2014-11-07 04:12:55 UTC
 Document.all.includes(:authors).greatest_updated_at # => 2015-02-18 16:36:04 UTC
 ```
 #### Why use this?
@@ -40,6 +39,9 @@ and as your views rely on more related records the number of things to touch inc
 <% cache(@document, @document.authors.includes(:contact_info, {:friends => :contact_info}).greatest_updated_at) do %>
   ... something about the document ...
   ... something about the authors ...
+  ... something about the authors contact info ...
+  ... something about the authors friends ...
+  ... something about the authors friends' contact info ...
 <% end %>
 ```
 
@@ -72,6 +74,12 @@ To use it, add it to your Gemfile:
 gem 'greatest_updated_at'
 ```
 
+Or if you have a sense of adventure:
+
+```ruby
+gem 'greatest_updated_at', :git => 'https://github.com/asee/greatest_updated_at'
+```
+
 and bundle:
 
 ```shell
@@ -80,6 +88,6 @@ bundle
 
 ## Warnings
 
-Currently it is both extremely naive and extremely simple.  If you use it with a polymorphic relation it will break.  Relations using non-standard table names will break.  Referencing tables without an updated_at will cause it to break.  In fact, it is really only useful for the most simple of cases.  
+Currently it is both extremely naive and extremely simple.  If you use it with a polymorphic relation it will break.  Relations using non-standard table names will break.  Referencing tables without an updated_at will cause it to break.  It has only been tested on MySQL.  In fact, it is really only useful for the most simple of cases.  
 
 Pull requests and suggestions for improvement are welcome.
