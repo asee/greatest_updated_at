@@ -7,8 +7,12 @@ Start with a scope.  Then use greatest_updated_at.  See the most recently update
 
 ```ruby
 Author.all.maximum(:updated_at).utc                 # => 2015-02-18 16:36:04 UTC
+Author.all.greatest_updated_at.utc                  # => 2015-02-18 16:36:04 UTC (same thing)
+
 Document.all.maximum(:updated_at).utc               # => 2014-11-07 04:12:55 UTC
-Document.all.includes(:authors).greatest_updated_at # => 2015-02-18 16:36:04 UTC
+Document.all.greatest_updated_at.utc                # => 2014-11-07 04:12:55 UTC (same thing)
+
+Document.all.includes(:authors).greatest_updated_at # => 2015-02-18 16:36:04 UTC (the most recent authors.updated_at)
 ```
 #### Why use this?
 
@@ -88,6 +92,6 @@ bundle
 
 ## Warnings
 
-Currently it is both extremely naive and extremely simple.  If you use it with a polymorphic relation it will break.  Relations using non-standard table names will break.  Referencing tables without an updated_at will cause it to break.  It has only been tested on MySQL.  In fact, it is really only useful for the most simple of cases.  
+Referencing tables without an updated_at will cause it to break.  It has only been tested on MySQL.  There are no automated tests.
 
 Pull requests and suggestions for improvement are welcome.
