@@ -36,7 +36,11 @@ module GreatestUpdatedAt
       
       # Get the result, and make sure it is cast the same as updated_at
       result = relation.klass.connection.select_value(arel, 'SQL', arel.bind_values + relation.bind_values)
-      relation.klass.column_types["updated_at"].type_cast_from_database(result)
+      if relation.klass.column_types["updated_at"].respond_to?(:type_cast_from_database)
+        relation.klass.column_types["updated_at"].type_cast_from_database(result)
+      else
+        relation.klass.column_types["updated_at"].type_cast(result)
+      end
     end
     
     protected
